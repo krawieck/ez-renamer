@@ -1,13 +1,10 @@
 #[macro_use]
 extern crate clap;
 
-#[macro_use]
-extern crate lazy_static;
 extern crate regex;
 
 use clap::{App, Arg};
-use regex::Regex;
-use std::{env, fs, os};
+use std::{env, fs};
 
 fn initialize(verbose: bool) -> std::fs::ReadDir {
     let current_dir = match env::current_dir() {
