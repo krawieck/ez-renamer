@@ -86,17 +86,17 @@ fn main() {
     let dir = initialize(verbose);
     // let remove:String = matches.value_of("remove_tags").unwrap_or_default(String::from("").to_string());
     // println!("{:?}", remove_tags);
-
+    let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
     // going over directory
     for file in dir {
         let original_name = match file {
-            Ok(path) => path,
+            Ok(entry) => entry.path(),
             Err(err) => {
                 eprintln!("Error happened when reading dir: \"{}\"", err);
                 continue;
             }
         };
-        let (path, filename, extension) = process_dir_entry(&original_name.path(), include_ext);
+        let (path, filename, extension) = process_dir_entry(&original_name, include_ext);
 
         if verbose {
             println!(
@@ -111,6 +111,18 @@ fn main() {
         final_name.set_file_name(filename);
         if !include_ext {
             final_name.set_extension(extension);
+        }
+        names.push((original_name, final_name));
+    }
+
+    // ASK USER IF THEY'RE SURE
+
+    println!("Renaming...");
+    for (a, b) in names {
+        print!("{} -> {}", a.to_str().unwrap(), b.to_str().unwrap());
+        match fs::rename(a, b) {
+            Ok(()) => println!(),
+            Err(err) => println!("  Error: {}", err),
         }
     }
 }
