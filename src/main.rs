@@ -116,6 +116,9 @@ fn main() {
     }
 
     // ASK USER IF THEY'RE SURE
+    if verbose {
+        println!("{:?}", names); // @TODO REPLACE THIS WITH STH BETTER
+    }
 
     println!("Renaming...");
     for (a, b) in names {
