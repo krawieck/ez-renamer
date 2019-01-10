@@ -4,6 +4,7 @@ extern crate clap;
 extern crate regex;
 
 use clap::{App, Arg};
+use regex::Regex;
 use std::{env, fs};
 
 fn initialize(verbose: bool) -> std::fs::ReadDir {
@@ -143,6 +144,32 @@ fn process_dir_entry(entry: &std::path::PathBuf, include_ext: bool) -> (String, 
     );
 }
 
+fn remove_inside_brackets(input: &String, brackets: String) -> String {
+    let mut output = input.clone();
+    for s in brackets.split_whitespace() {
+        output = {
+            if s.len() != 2 {
+                panic!("Brackets are not formatted correctly");
+            }
+            let s: Vec<char> = s.chars().collect();
+            let beg: char = s[0];
+            let end: char = s[1];
+            let beg = regex::escape(&beg.to_string());
+            let end = regex::escape(&end.to_string());
+
+            let mut reg_str = String::from(beg);
+            reg_str.push_str(".*?");
+            reg_str.push_str(&end);
+            let reg = Regex::new(&reg_str).expect("Dev messed sth up with removing brackets");
+            println!("before: {}", &output);
+            reg.replace_all(&output, "").to_string()
+        };
+        println!("after: {}", &output);
+    }
+    println!("returning {}", &output);
+    output
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
@@ -161,5 +188,10 @@ mod tests {
             )
         );
     }
-
+    #[test]
+    fn test_remove_inside_brackets() {
+        let mock = String::from("black_mirror_bandersnatch_[720p]_(x264)");
+        let mock = super::remove_inside_brackets(&mock, String::from("[] ()"));
+        assert_eq!(mock, String::from("black_mirror_bandersnatch__"));
+    }
 }
