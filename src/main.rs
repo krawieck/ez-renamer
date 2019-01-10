@@ -132,7 +132,8 @@ fn main() {
 }
 
 fn process_dir_entry(entry: &std::path::PathBuf, include_ext: bool) -> (String, String, String) {
-    let err_msg = "Dev fucked somthing up with extracting filename and extension from path";
+    let err_msg = "Dev fucked somthing up with extracting filename and extension from path
+                   ...or the somehow the path is wrong, idk, it's just a pre-written message";
     return (
         String::from(entry.parent().expect(err_msg).to_str().expect(err_msg)),
         if include_ext {
