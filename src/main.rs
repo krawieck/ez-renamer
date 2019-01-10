@@ -162,12 +162,9 @@ fn remove_inside_brackets(input: &String, brackets: String) -> String {
             reg_str.push_str(".*?");
             reg_str.push_str(&end);
             let reg = Regex::new(&reg_str).expect("Dev messed sth up with removing brackets");
-            println!("before: {}", &output);
             reg.replace_all(&output, "").to_string()
         };
-        println!("after: {}", &output);
     }
-    println!("returning {}", &output);
     output
 }
 
@@ -177,8 +174,6 @@ mod tests {
     fn test_process_dir_entry() {
         let mock_entry =
             std::path::PathBuf::from("/home/user/porn/brazzers_1_[x264]_(1080p)_{2018-05-14}.mkv");
-
-        // let result = super::process_dir_entry(&mock_entry, true);
 
         assert_eq!(
             super::process_dir_entry(&mock_entry, true),
