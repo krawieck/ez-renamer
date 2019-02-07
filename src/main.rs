@@ -4,12 +4,11 @@ extern crate clap;
 extern crate regex;
 use clap::{App, Arg};
 use std::{env, fs, process};
+mod args_parser;
 mod init;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    // let regex = &args[1];
-    let matches = App::new(crate_name!())
+    let matches: clap::ArgMatches<'_> = App::new(crate_name!())
         .version(crate_version!())
         .author(crate_authors!())
         .arg(
@@ -52,26 +51,25 @@ fn main() {
                 .takes_value(true),
         ])
         .get_matches();
-
-    let verbose = matches.is_present("verbose");
-    let fix_spaces = matches.is_present("fix_spaces");
-    let include_ext = matches.is_present("include_ext");
+    let args = args_parser::Args::from(matches);
+    let verbose = args.verbose;
     if verbose {
-        println!("args: {:?}", args);
-        println!("matches: {:?}", matches);
+        println!("args: {:?}", env::args());
+        println!("matches: {:?}", args);
     }
-    let remove_tags = matches.value_of("remove_tags").unwrap_or("");
+    let fix_spaces = args.fix_spaces;
+    let include_ext = args.include_ext;
+    let remove_tags = args.remove_tags;
     if verbose {
         println!("remove tags {}", remove_tags);
     }
     let dir: fs::ReadDir = {
-        if matches.is_present("directory") {
-            init::initialize(matches.value_of("directory").unwrap(), verbose)
+        if args.directory != "" {
+            init::initialize(&args.directory, verbose)
         } else {
             init::initialize(".", verbose)
         }
     };
-    // let remove:String = matches.value_of("remove_tags").unwrap_or_default(String::from("").to_string());
     // println!("{:?}", remove_tags);
     let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
 
@@ -186,9 +184,6 @@ fn process_dir_entry(
         String::from(entry.extension().unwrap_or_default().to_str().unwrap()),
         entry,
     );
-    if verbose {
-        println!("ok");
-    }
     return Ok(result);
 }
 fn remove_inside_brackets(input: &String, brackets: String) -> String {

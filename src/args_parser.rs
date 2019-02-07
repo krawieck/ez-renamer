@@ -1,15 +1,17 @@
 use clap;
+use std::fmt;
 
+#[derive(Debug)]
 pub struct Args {
-    directory: String,
-    verbose: bool,
-    include_ext: bool,
-    fix_spaces: bool,
-    remove_tags: String,
+    pub directory: String,
+    pub verbose: bool,
+    pub include_ext: bool,
+    pub fix_spaces: bool,
+    pub remove_tags: String,
 }
 
 impl Args {
-    fn from(matches: clap::ArgMatches<'_>) -> Self {
+    pub fn from(matches: clap::ArgMatches) -> Self {
         Args {
             directory: matches.value_of("directory").unwrap_or("").to_string(),
             verbose: matches.is_present("verbose"),
