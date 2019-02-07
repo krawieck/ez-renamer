@@ -80,6 +80,7 @@ fn main() {
         }
 
         let filename = remove_inside_brackets(&filename, remove_tags.to_owned());
+        let filename = fix_spaces(filename, &args.fix_spaces);
 
         let mut final_name = std::path::PathBuf::from(path);
         final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
