@@ -1,5 +1,4 @@
 use clap;
-use std::fmt;
 
 #[derive(Debug)]
 pub struct Args {
@@ -13,7 +12,7 @@ pub struct Args {
 impl Args {
     pub fn from(matches: clap::ArgMatches) -> Self {
         Args {
-            directory: matches.value_of("directory").unwrap_or("").to_string(),
+            directory: matches.value_of("directory").unwrap_or(".").to_string(),
             verbose: matches.is_present("verbose"),
             include_ext: matches.is_present("include_ext"),
             fix_spaces: matches.is_present("fix_spaces"),

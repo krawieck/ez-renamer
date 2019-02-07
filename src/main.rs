@@ -63,13 +63,7 @@ fn main() {
     if verbose {
         println!("remove tags {}", remove_tags);
     }
-    let dir: fs::ReadDir = {
-        if args.directory != "" {
-            init::initialize(&args.directory, verbose)
-        } else {
-            init::initialize(".", verbose)
-        }
-    };
+    let dir: fs::ReadDir = init::initialize(".", verbose);
     // println!("{:?}", remove_tags);
     let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
 
