@@ -1,8 +1,9 @@
 #[macro_use]
 extern crate clap;
-
 extern crate regex;
+
 use clap::{App, Arg};
+use regex::Regex;
 use std::{env, fs, io, process};
 mod args_parser;
 mod init;
@@ -15,7 +16,7 @@ fn main() {
             Arg::with_name("file_match")
                 .help("regular expression for files to rename")
                 .index(1)
-                .required(true),
+                .required(false),
         )
         .args(&[
             Arg::with_name("fix_spaces")
@@ -62,10 +63,12 @@ fn main() {
     let dir: fs::ReadDir = init::initialize(&args.directory, verbose);
     let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
 
+    let reg = Regex::new(&args.file_match).expect("file match ain't valid");
+
     // GO OVER DIRECTORY AND MAKE CHANGES
     for file in dir {
         let (path, filename, extension, original_name) =
-            match process_dir_entry(&file, include_ext, verbose) {
+            match process_dir_entry(&file, include_ext, &reg, verbose) {
                 Ok(e) => e,
                 Err(_) => continue,
             };
@@ -136,12 +139,14 @@ fn fix_spaces(input: String, replacer: &str) -> String {
 fn process_dir_entry(
     entry: &std::result::Result<std::fs::DirEntry, std::io::Error>,
     include_ext: bool,
+    file_match: &Regex,
     verbose: bool,
 ) -> Result<(String, String, String, std::path::PathBuf), ()> {
     use std::path::PathBuf;
     if verbose {
         print!("processing {:?}... ", &entry);
     }
+
     let entry: PathBuf = match entry {
         Ok(entry) => {
             match entry.file_type() {
@@ -154,6 +159,9 @@ fn process_dir_entry(
                     }
                 }
                 Err(_) => return Err(()),
+            }
+            if !file_match.is_match(entry.file_name().to_str().unwrap()) {
+                return Err(());
             }
 
             entry.path()
