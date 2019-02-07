@@ -62,7 +62,7 @@ fn main() {
     if verbose {
         println!("remove tags {}", remove_tags);
     }
-    let dir: fs::ReadDir = init::initialize(".", verbose);
+    let dir: fs::ReadDir = init::initialize(&args.directory, verbose);
     let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
 
     // GO OVER DIRECTORY AND MAKE CHANGES
