@@ -50,6 +50,12 @@ fn main() {
                 .short("e")
                 .long("include-ext")
                 .takes_value(true),
+            Arg::with_name("dont_cleanup_spaces")
+                .help(
+                    "by default ez-renamer removes multiple spaces (cleans up) \
+                     after it's done. This flag stops him from doing that",
+                )
+                .long("dont-cleanup"), // TODO: add short?
         ])
         .get_matches();
     let args = args_parser::Args::from(matches);
