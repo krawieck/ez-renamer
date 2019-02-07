@@ -218,24 +218,6 @@ mod helpers {
 
 #[cfg(test)]
 mod tests {
-    // SEEMS LIKE UNTESTABLE FUNCTION
-    // #[test]
-    // fn test_process_dir_entry() {
-    //     let entry = std::fs::DirEntry::from();
-    //     let mock_entry: std::fs::DirEntry = (std::path::PathBuf::from(
-    //         "/home/user/porn/brazzers_1_[x264]_(1080p)_{2018-05-14}.mkv",
-    //     ));
-
-    //     assert_eq!(
-    //         super::process_dir_entry(Ok(&mock_entry), true),
-    //         (
-    //             String::from("/home/user/porn"),
-    //             String::from("brazzers_1_[x264]_(1080p)_{2018-05-14}"),
-    //             String::from("mkv"),
-    //             mock_entry
-    //         )
-    //     );
-    // }
     #[test]
     fn test_remove_inside_brackets() {
         let mock = String::from("black_mirror_bandersnatch_[720p]_(x264)");
