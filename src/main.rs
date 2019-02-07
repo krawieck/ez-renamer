@@ -43,16 +43,12 @@ fn main() {
             Arg::with_name("directory")
                 .help("where should I rename files")
                 .short("d")
-                .long("directory")
+                .long("dir")
                 .takes_value(true),
             Arg::with_name("include_ext")
                 .help("include extension in renaming")
                 .short("e")
                 .long("include-ext")
-                .takes_value(true),
-            Arg::with_name("dir")
-                .help("working directory")
-                .long("dir")
                 .takes_value(true),
         ])
         .get_matches();
@@ -69,8 +65,8 @@ fn main() {
         println!("remove tags {}", remove_tags);
     }
     let dir: fs::ReadDir = {
-        if matches.is_present("dir") {
-            init::initialize(matches.value_of("dir").unwrap(), verbose)
+        if matches.is_present("directory") {
+            init::initialize(matches.value_of("directory").unwrap(), verbose)
         } else {
             init::initialize(".", verbose)
         }
@@ -94,6 +90,7 @@ fn main() {
         }
 
         let filename = remove_inside_brackets(&filename, remove_tags.to_owned());
+        // let filename =
 
         let mut final_name = std::path::PathBuf::from(path);
         final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
