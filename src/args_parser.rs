@@ -2,6 +2,7 @@ use clap;
 
 #[derive(Debug)]
 pub struct Args {
+    pub file_match: String,
     pub directory: String,
     pub verbose: bool,
     pub include_ext: bool,
@@ -12,6 +13,7 @@ pub struct Args {
 impl Args {
     pub fn from(matches: clap::ArgMatches) -> Self {
         Args {
+            file_match: matches.value_of("file_match").unwrap_or(".").to_string(),
             directory: matches.value_of("directory").unwrap_or(".").to_string(),
             verbose: matches.is_present("verbose"),
             include_ext: matches.is_present("include_ext"),
