@@ -59,9 +59,6 @@ fn main() {
     }
     let include_ext = args.include_ext;
     let remove_tags = args.remove_tags;
-    if verbose {
-        println!("remove tags {}", remove_tags);
-    }
     let dir: fs::ReadDir = init::initialize(&args.directory, verbose);
     let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
 
