@@ -57,7 +57,6 @@ fn main() {
         println!("args: {:?}", env::args());
         println!("matches: {:?}", args);
     }
-    let fix_spaces = args.fix_spaces;
     let include_ext = args.include_ext;
     let remove_tags = args.remove_tags;
     if verbose {
@@ -126,6 +125,14 @@ fn main() {
         }
     }
     println!("Done!")
+}
+
+fn fix_spaces(input: String, replacer: &str) -> String {
+    let mut output: String = input.clone();
+    for x in replacer.chars() {
+        output = output.replace(x, " ");
+    }
+    output
 }
 
 fn process_dir_entry(
@@ -234,5 +241,15 @@ mod tests {
         let mock = String::from("black_mirror_bandersnatch_[720p]_(x264)");
         let mock = super::remove_inside_brackets(&mock, String::from("[] ()"));
         assert_eq!(mock, String::from("black_mirror_bandersnatch__"));
+    }
+
+    #[test]
+    fn test_fix_spaces() {
+        let mock_input = String::from("black_mirror_bandersnatch.[720p].(x264)");
+        let mock_replacer = "._";
+        assert_eq!(
+            super::fix_spaces(mock_input, mock_replacer),
+            String::from("black mirror bandersnatch [720p] (x264)")
+        );
     }
 }
