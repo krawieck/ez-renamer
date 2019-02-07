@@ -58,8 +58,6 @@ fn main() {
         println!("args: {:?}", env::args());
         println!("matches: {:?}", args);
     }
-    let include_ext = args.include_ext;
-    let remove_tags = args.remove_tags;
     let dir: fs::ReadDir = init::initialize(&args.directory, verbose);
     let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
 
@@ -68,7 +66,7 @@ fn main() {
     // GO OVER DIRECTORY AND MAKE CHANGES
     for file in dir {
         let (path, filename, extension, original_name) =
-            match process_dir_entry(&file, include_ext, &reg, verbose) {
+            match process_dir_entry(&file, args.include_ext, &reg, verbose) {
                 Ok(e) => e,
                 Err(_) => continue,
             };
@@ -79,13 +77,13 @@ fn main() {
             );
         }
 
-        let filename = remove_inside_brackets(&filename, remove_tags.to_owned());
+        let filename = remove_inside_brackets(&filename, &args.remove_tags);
         let filename = fix_spaces(filename, &args.fix_spaces);
 
         let mut final_name = std::path::PathBuf::from(path);
         final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
 
-        if !include_ext {
+        if !args.include_ext {
             final_name.set_extension(extension);
         }
 
@@ -184,7 +182,7 @@ fn process_dir_entry(
     );
     return Ok(result);
 }
-fn remove_inside_brackets(input: &String, brackets: String) -> String {
+fn remove_inside_brackets(input: &String, brackets: &String) -> String {
     use regex::Regex;
 
     let mut output = input.clone();
