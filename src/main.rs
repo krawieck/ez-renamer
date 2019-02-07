@@ -3,7 +3,7 @@ extern crate clap;
 
 extern crate regex;
 use clap::{App, Arg};
-use std::{env, fs, process};
+use std::{env, fs, io, process};
 mod args_parser;
 mod init;
 
@@ -64,7 +64,6 @@ fn main() {
         println!("remove tags {}", remove_tags);
     }
     let dir: fs::ReadDir = init::initialize(".", verbose);
-    // println!("{:?}", remove_tags);
     let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
 
     // GO OVER DIRECTORY AND MAKE CHANGES
@@ -82,7 +81,6 @@ fn main() {
         }
 
         let filename = remove_inside_brackets(&filename, remove_tags.to_owned());
-        // let filename =
 
         let mut final_name = std::path::PathBuf::from(path);
         final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
@@ -103,10 +101,7 @@ fn main() {
         );
     }
 
-    use std::io::{self, Write};
-    // let writer = std::io::stdout();
-
-    io::stdout().write(b"Should I proceed? [Y/n] ").unwrap();
+    print!("Should I proceed? [Y/n] ");
     io::Write::flush(&mut io::stdout()).expect("flush failed!");
 
     let should_i_proceed = helpers::get_input();
@@ -138,13 +133,9 @@ fn process_dir_entry(
     include_ext: bool,
     verbose: bool,
 ) -> Result<(String, String, String, std::path::PathBuf), ()> {
-    use std::ffi::OsStr;
     use std::path::PathBuf;
-    // let err_msg = "Dev fucked something up with extracting filename and extension from path... \
-    //                or the somehow the path is wrong, idk, it's just a pre-written message";
     if verbose {
-        print!("processing {:?} ... ", &entry);
-        println!("{:?}", entry);
+        print!("processing {:?}... ", &entry);
     }
     let entry: PathBuf = match entry {
         Ok(entry) => {
@@ -187,7 +178,8 @@ fn remove_inside_brackets(input: &String, brackets: String) -> String {
     for s in brackets.split_whitespace() {
         output = {
             if s.len() != 2 {
-                panic!("Brackets are not formatted correctly");
+                eprintln!("Error: Brackets are not formatted correctly");
+                process::exit(1)
             }
             let s: Vec<char> = s.chars().collect();
             let beg: char = s[0];
