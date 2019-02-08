@@ -200,9 +200,9 @@ fn process_dir_entry(
     let result = (
         String::from(entry.parent().unwrap().to_str().unwrap()),
         if include_ext {
-            String::from(entry.file_stem().unwrap().to_str().unwrap())
-        } else {
             String::from(entry.file_name().unwrap().to_str().unwrap())
+        } else {
+            String::from(entry.file_stem().unwrap().to_str().unwrap())
         },
         String::from(entry.extension().unwrap_or_default().to_str().unwrap()),
         entry,
