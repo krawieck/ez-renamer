@@ -86,6 +86,8 @@ fn main() {
         let filename = remove_inside_brackets(&filename, &args.remove_tags);
         let filename = fix_spaces(filename, &args.fix_spaces);
 
+        let filename = cleanup_spaces(&filename);
+
         let mut final_name = std::path::PathBuf::from(path);
         final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
 
@@ -130,6 +132,25 @@ fn main() {
         }
     }
     println!("Done!")
+}
+
+fn cleanup_spaces(input: &str) -> String {
+    let mut prev_was_space = false;
+    let mut output = String::new();
+    for x in input.chars() {
+        if x == ' ' {
+            if prev_was_space {
+                continue;
+            } else {
+                output.push(x);
+                prev_was_space = true;
+            }
+        } else {
+            prev_was_space = false;
+            output.push(x);
+        }
+    }
+    output.trim().to_owned()
 }
 
 fn fix_spaces(input: String, replacer: &str) -> String {
@@ -231,7 +252,7 @@ mod tests {
     #[test]
     fn test_remove_inside_brackets() {
         let mock = String::from("black_mirror_bandersnatch_[720p]_(x264)");
-        let mock = super::remove_inside_brackets(&mock, String::from("[] ()"));
+        let mock = super::remove_inside_brackets(&mock, &String::from("[] ()"));
         assert_eq!(mock, String::from("black_mirror_bandersnatch__"));
     }
 
@@ -242,6 +263,14 @@ mod tests {
         assert_eq!(
             super::fix_spaces(mock_input, mock_replacer),
             String::from("black mirror bandersnatch [720p] (x264)")
+        );
+    }
+
+    #[test]
+    fn test_cleanup_spaces() {
+        assert_eq!(
+            super::cleanup_spaces("   black   mirror   bandersnatch  "),
+            String::from("black mirror bandersnatch")
         );
     }
 }
