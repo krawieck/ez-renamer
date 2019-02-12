@@ -57,36 +57,41 @@ fn main() {
                 )
                 .long("dont-cleanup"), // TODO: add short?
             Arg::with_name("trim_right_from")
-                .help("Trim from the given sequence to the right
+                .help(
+                    "Trim from the given sequence to the right
 example:
 ezr --trim-right-from [1080p]
-\"Mind Field S03E02 [1080p] [x265] [YIFY].mkv\" -> \"Mind Field S03E02 [1080p].mkv\"")
+\"Mind Field S03E02 [1080p] [x265] [YIFY].mkv\" -> \"Mind Field S03E02 [1080p].mkv\"",
+                )
                 .long("trim-right-from")
                 .takes_value(true),
             Arg::with_name("trim_left_from")
-                .help("Trim with the given sequence to the left.
+                .help(
+                    "Trim with the given sequence to the left.
 example:
 ezr --trim-left-with mind
-\"[HorribleSubs] Mind Field S03E02.mkv\" -> \"Mind Field S03E02.mkv\"")
+\"[HorribleSubs] Mind Field S03E02.mkv\" -> \"Mind Field S03E02.mkv\"",
+                )
                 .long("trim-left-from")
                 .takes_value(true),
             Arg::with_name("trim_right_with")
-                .help("Trim with the given sequence to the right
+                .help(
+                    "Trim with the given sequence to the right
 example:
 ezr --trim-right-with [1080p]
-\"Mind Field S03E02 [1080p] [x265] [YIFY].mkv\" -> \"Mind Field S03E02 .mkv\"")
+\"Mind Field S03E02 [1080p] [x265] [YIFY].mkv\" -> \"Mind Field S03E02 .mkv\"",
+                )
                 .long("trim-right-with")
                 .takes_value(true),
             Arg::with_name("trim_left_with")
-                .help("Trim with the given sequence to the left.
+                .help(
+                    "Trim with the given sequence to the left.
 example:
 ezr --trim-left-with ubs]
-\"[HorribleSubs] Mind Field S03E02.mkv\" -> \"Mind Field S03E02.mkv\"")
+\"[HorribleSubs] Mind Field S03E02.mkv\" -> \"Mind Field S03E02.mkv\"",
+                )
                 .long("trim-left-with")
                 .takes_value(true),
-            
-            
-                
         ])
         .get_matches();
     let args = args_parser::Args::from(matches);
