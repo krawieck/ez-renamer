@@ -12,6 +12,7 @@ pub struct Args {
     pub trim_right_with: String,
     pub trim_left_from: String,
     pub trim_left_with: String,
+    pub dont_cleanup: bool,
 }
 
 impl Args {
@@ -33,6 +34,7 @@ impl Args {
                 .to_string(),
             trim_left_from: matches.value_of("trim_left_from").unwrap_or("").to_string(),
             trim_left_with: matches.value_of("trim_left_with").unwrap_or("").to_string(),
+            dont_cleanup: matches.is_present("dont_cleanup_spaces"),
         }
     }
 }
