@@ -122,7 +122,11 @@ ezr --trim-left-with ubs]
         let filename = remove_inside_brackets(&filename, &args.remove_tags);
         let filename = fix_spaces(filename, &args.fix_spaces);
 
-        let filename = cleanup_spaces(&filename);
+        let filename = if !args.dont_cleanup {
+            cleanup_spaces(&filename)
+        } else {
+            filename
+        };
 
         let mut final_name = std::path::PathBuf::from(path);
         final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
