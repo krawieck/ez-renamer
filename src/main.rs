@@ -249,6 +249,7 @@ fn process_dir_entry(
     );
     return Ok(result);
 }
+
 fn remove_inside_brackets(input: &String, brackets: &String) -> String {
     use regex::Regex;
 
@@ -273,6 +274,10 @@ fn remove_inside_brackets(input: &String, brackets: &String) -> String {
         };
     }
     output
+}
+
+fn delete(input: &str, to_be_deleted: &str) -> String {
+    input.replace(to_be_deleted, "")
 }
 
 mod helpers {
@@ -312,5 +317,16 @@ mod tests {
             super::cleanup_spaces("   black   mirror   bandersnatch  "),
             String::from("black mirror bandersnatch")
         );
+    }
+
+    #[test]
+    fn test_delete() {
+        assert_eq!(
+            super::delete(
+                "Black Mirror Bandersnatch [x265] [1080p] [EpicRelease]",
+                "[x265] [1080p] [EpicRelease]"
+            ),
+            String::from("Black Mirror Bandersnatch ")
+        )
     }
 }
