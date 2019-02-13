@@ -42,7 +42,6 @@ fn main() {
                 .takes_value(false),
             Arg::with_name("directory")
                 .help("where should I rename files")
-                .short("d")
                 .long("dir")
                 .takes_value(true),
             Arg::with_name("include_ext")
@@ -91,6 +90,11 @@ ezr --trim-left-with ubs]
 \"[HorribleSubs] Mind Field S03E02.mkv\" -> \"Mind Field S03E02.mkv\"",
                 )
                 .long("trim-left-with")
+                .takes_value(true),
+            Arg::with_name("delete")
+                .help("deletes the anything containing given phrase")
+                .short("d")
+                .long("delete")
                 .takes_value(true),
         ])
         .get_matches();
