@@ -2,11 +2,12 @@
 extern crate clap;
 extern crate regex;
 
+mod args_parser;
+mod init;
+
 use clap::{App, Arg};
 use regex::Regex;
 use std::{env, fs, io, process};
-mod args_parser;
-mod init;
 
 fn main() {
     let matches: clap::ArgMatches<'_> = App::new(crate_name!())
