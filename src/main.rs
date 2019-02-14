@@ -125,6 +125,7 @@ ezr --trim-left-with ubs]
 
         let filename = remove_inside_brackets(&filename, &args.remove_tags);
         let filename = fix_spaces(filename, &args.fix_spaces);
+        let filename = delete(&filename, &args.delete);
 
         let filename = if !args.dont_cleanup {
             cleanup_spaces(&filename)
