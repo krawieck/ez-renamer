@@ -56,23 +56,23 @@ fn main() {
                      after it's done. This flag stops him from doing that",
                 )
                 .long("dont-cleanup"), // TODO: add short?
-            Arg::with_name("trim_right_from")
+            Arg::with_name("trim_right_after")
                 .help(
-                    "Trim from the given sequence to the right
+                    "Trim after the given sequence to the right
 example:
-ezr --trim-right-from [1080p]
+ezr --trim-right-after [1080p]
 \"Mind Field S03E02 [1080p] [x265] [YIFY].mkv\" -> \"Mind Field S03E02 [1080p].mkv\"",
                 )
-                .long("trim-right-from")
+                .long("trim-right-after")
                 .takes_value(true),
-            Arg::with_name("trim_left_from")
+            Arg::with_name("trim_left_after")
                 .help(
-                    "Trim with the given sequence to the left.
+                    "Trim after the given sequence to the left.
 example:
 ezr --trim-left-with mind
 \"[HorribleSubs] Mind Field S03E02.mkv\" -> \"Mind Field S03E02.mkv\"",
                 )
-                .long("trim-left-from")
+                .long("trim-left-after")
                 .takes_value(true),
             Arg::with_name("trim_right_with")
                 .help(
@@ -93,7 +93,7 @@ ezr --trim-left-with ubs]
                 .long("trim-left-with")
                 .takes_value(true),
             Arg::with_name("delete")
-                .help("deletes the anything containing given phrase")
+                .help("deletes this phrase(s) from names")
                 .short("d")
                 .long("delete")
                 .takes_value(true),
