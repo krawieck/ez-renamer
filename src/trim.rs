@@ -1,6 +1,6 @@
 use regex::Regex;
 
-pub fn trim_right_from(string: &str, from: &str) -> String {
+pub fn trim_right_with(string: &str, from: &str) -> String {
     if from == "" {
         return string.to_owned();
     }
@@ -29,7 +29,7 @@ pub fn trim_right_after(string: &str, after: &str) -> String {
         .to_owned()
 }
 
-pub fn trim_left_from(string: &str, from: &str) -> String {
+pub fn trim_left_with(string: &str, from: &str) -> String {
     if from == "" {
         return string.to_owned();
     }
@@ -74,14 +74,14 @@ mod tests {
     }
 
     #[test]
-    fn test_trim_right_from() {
+    fn test_trim_right_with() {
         assert_eq!(
-            super::trim_right_from("black mirror bandersnatch [x265] [1080p]", "[x26"),
+            super::trim_right_with("black mirror bandersnatch [x265] [1080p]", "[x26"),
             String::from("black mirror bandersnatch ")
         );
 
         assert_eq!(
-            super::trim_right_from("black mirror bandersnatch", ""),
+            super::trim_right_with("black mirror bandersnatch", ""),
             String::from("black mirror bandersnatch")
         );
     }
@@ -95,9 +95,9 @@ mod tests {
     }
 
     #[test]
-    fn trim_left_from() {
+    fn trim_left_with() {
         assert_eq!(
-            super::trim_left_from("black mirror bandersnatch", ""),
+            super::trim_left_with("black mirror bandersnatch", ""),
             String::from("black mirror bandersnatch")
         );
     }
