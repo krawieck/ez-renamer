@@ -8,9 +8,9 @@ pub struct Args {
     pub include_ext: bool,
     pub fix_spaces: String,
     pub remove_tags: String,
-    pub trim_right_from: String,
+    pub trim_right_after: String,
     pub trim_right_with: String,
-    pub trim_left_from: String,
+    pub trim_left_after: String,
     pub trim_left_with: String,
     pub dont_cleanup: bool,
     pub delete: String,
@@ -25,15 +25,18 @@ impl Args {
             include_ext: matches.is_present("include_ext"),
             fix_spaces: matches.value_of("fix_spaces").unwrap_or("").to_string(),
             remove_tags: matches.value_of("remove_tags").unwrap_or("").to_string(),
-            trim_right_from: matches
-                .value_of("trim_right_from")
+            trim_right_after: matches
+                .value_of("trim_right_after")
                 .unwrap_or("")
                 .to_string(),
             trim_right_with: matches
                 .value_of("trim_right_with")
                 .unwrap_or("")
                 .to_string(),
-            trim_left_from: matches.value_of("trim_left_from").unwrap_or("").to_string(),
+            trim_left_after: matches
+                .value_of("trim_left_after")
+                .unwrap_or("")
+                .to_string(),
             trim_left_with: matches.value_of("trim_left_with").unwrap_or("").to_string(),
             dont_cleanup: matches.is_present("dont_cleanup_spaces"),
             delete: matches.value_of("delete").unwrap_or("").to_string(),
