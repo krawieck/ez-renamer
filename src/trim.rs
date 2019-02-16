@@ -1,6 +1,9 @@
 use regex::Regex;
 
 pub fn trim_right_from(string: &str, from: &str) -> String {
+    if from == "" {
+        return string.to_owned();
+    }
     let from: String = regex::escape(from);
     let reg = Regex::new(&format!("(?P<result>.*){}.*", from)).unwrap();
     reg.captures(&string)
@@ -12,6 +15,9 @@ pub fn trim_right_from(string: &str, from: &str) -> String {
 }
 
 pub fn trim_right_after(string: &str, after: &str) -> String {
+    if after == "" {
+        return string.to_owned();
+    }
     let after: String = regex::escape(after);
     println!("after {}", after);
     let reg = Regex::new(&format!("(?P<result>.*{}).*", after)).unwrap();
@@ -24,6 +30,9 @@ pub fn trim_right_after(string: &str, after: &str) -> String {
 }
 
 pub fn trim_left_from(string: &str, from: &str) -> String {
+    if from == "" {
+        return string.to_owned();
+    }
     let from: String = regex::escape(from);
     let reg = Regex::new(&format!(".*{}(?P<result>.*)", from)).unwrap();
     reg.captures(&string)
@@ -35,6 +44,9 @@ pub fn trim_left_from(string: &str, from: &str) -> String {
 }
 
 pub fn trim_left_after(string: &str, after: &str) -> String {
+    if after == "" {
+        return string.to_owned();
+    }
     let after: String = regex::escape(after);
     println!("after {}", after);
     let reg = Regex::new(&format!(".*(?P<result>{}.*)", after)).unwrap();
@@ -54,6 +66,11 @@ mod tests {
             super::trim_right_after("black mirror bandersnatch [x265] [1080p]", "snatch"),
             String::from("black mirror bandersnatch")
         );
+
+        assert_eq!(
+            super::trim_right_after("black mirror bandersnatch", ""),
+            String::from("black mirror bandersnatch")
+        );
     }
 
     #[test]
@@ -62,12 +79,17 @@ mod tests {
             super::trim_right_from("black mirror bandersnatch [x265] [1080p]", "[x26"),
             String::from("black mirror bandersnatch ")
         );
+
+        assert_eq!(
+            super::trim_right_from("black mirror bandersnatch", ""),
+            String::from("black mirror bandersnatch")
+        );
     }
 
     #[test]
     fn trim_left_after() {
         assert_eq!(
-            super::trim_left_after("[HorribleSubs] black mirror bandersnatch", "black"),
+            super::trim_left_after("black mirror bandersnatch", ""),
             String::from("black mirror bandersnatch")
         );
     }
@@ -75,8 +97,8 @@ mod tests {
     #[test]
     fn trim_left_from() {
         assert_eq!(
-            super::trim_left_from("[HorribleSubs] black mirror bandersnatch", "ubs]"),
-            String::from(" black mirror bandersnatch")
+            super::trim_left_from("black mirror bandersnatch", ""),
+            String::from("black mirror bandersnatch")
         );
     }
 }
