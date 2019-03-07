@@ -17,6 +17,7 @@ pub struct Args {
 }
 
 impl Args {
+    #[cfg(test)]
     pub fn new() -> Self {
         Args {
             file_match: String::new(),
@@ -60,7 +61,7 @@ impl Args {
         }
     }
     pub fn parse() -> Self {
-        use clap::{App, Arg};
+        use clap::{crate_authors, crate_name, crate_version, App, Arg};
         // TODO: move clap declaration to .yaml file or at least sth less cluttered
         Args::from(
             App::new(crate_name!())
