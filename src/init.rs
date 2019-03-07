@@ -1,4 +1,4 @@
-pub fn initialize(dir: &str) -> std::fs::ReadDir {
+pub fn initialize(dir: &std::path::PathBuf) -> std::fs::ReadDir {
     use std::{fs, process};
 
     match fs::read_dir(dir) {

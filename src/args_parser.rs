@@ -3,7 +3,7 @@ use clap;
 #[derive(Debug)]
 pub struct Args {
     pub file_match: String,
-    pub directory: String,
+    pub directory: std::path::PathBuf,
     pub verbose: bool,
     pub include_ext: bool,
     pub fix_spaces: String,
@@ -19,9 +19,10 @@ pub struct Args {
 impl Args {
     #[cfg(test)]
     pub fn new() -> Self {
+        use std::path::PathBuf;
         Args {
             file_match: String::new(),
-            directory: String::new(),
+            directory: PathBuf::new(),
             verbose: false,
             include_ext: false,
             fix_spaces: String::new(),
@@ -36,9 +37,10 @@ impl Args {
     }
 
     pub fn from(matches: clap::ArgMatches) -> Self {
+        use std::path::PathBuf;
         Args {
             file_match: matches.value_of("file_match").unwrap_or(".").to_string(),
-            directory: matches.value_of("directory").unwrap_or(".").to_string(),
+            directory: PathBuf::from(matches.value_of("directory").unwrap_or(".").to_string()),
             verbose: matches.is_present("verbose"),
             include_ext: matches.is_present("include_ext"),
             fix_spaces: matches.value_of("fix_spaces").unwrap_or("").to_string(),
