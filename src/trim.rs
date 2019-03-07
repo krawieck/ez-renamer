@@ -45,7 +45,6 @@ pub fn trim(string: &str, args: &Args) -> String {
             .unwrap(),
         )
     }
-    println!("{:?}", regs);
     for reg in regs {
         string = match reg.captures(&string) {
             Some(ref capture) => capture.name("result").unwrap().as_str(),
