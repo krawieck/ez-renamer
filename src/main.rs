@@ -1,4 +1,5 @@
 extern crate clap;
+extern crate exitcode;
 extern crate lazy_static;
 extern crate log;
 extern crate pretty_env_logger;
@@ -74,7 +75,7 @@ fn main() {
     let should_i_proceed = helpers::get_input();
     if !(should_i_proceed == "" || should_i_proceed.starts_with("y")) {
         println!("exiting...");
-        process::exit(1)
+        process::exit(exitcode::OK)
     }
 
     // RENAMING
@@ -166,6 +167,7 @@ fn process_dir_entry(
 }
 
 fn remove_inside_brackets(input: &String, brackets: &String) -> String {
+    use exitcode;
     use regex::Regex;
 
     let mut output = input.clone();
@@ -173,7 +175,7 @@ fn remove_inside_brackets(input: &String, brackets: &String) -> String {
         output = {
             if s.len() != 2 {
                 eprintln!("Error: Brackets are not formatted correctly");
-                process::exit(1)
+                process::exit(exitcode::CONFIG);
             }
             let s: Vec<char> = s.chars().collect();
             let beg: char = s[0];
