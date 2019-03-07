@@ -1,5 +1,7 @@
-#[macro_use]
 extern crate clap;
+extern crate lazy_static;
+extern crate log;
+extern crate pretty_env_logger;
 extern crate regex;
 
 mod args_parser;
@@ -7,17 +9,18 @@ mod init;
 mod trim;
 
 use args_parser::Args;
+use log::{error, info, warn};
 use regex::Regex;
 use std::{env, fs, io, process};
 
 fn main() {
+    pretty_env_logger::init();
+    // pretty_env_logger::formatted_builder();
     let args = Args::parse();
     let verbose = args.verbose;
-    if verbose {
-        println!("args: {:?}", env::args());
-        println!("matches: {:?}", args);
-    }
-    let dir: fs::ReadDir = init::initialize(&args.directory, verbose);
+    info!("args: {:#?}", env::args());
+    info!("matches: {:#?}", args);
+    let dir: fs::ReadDir = init::initialize(&args.directory);
     let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
 
     let reg = Regex::new(&args.file_match).expect("file match ain't valid");
@@ -25,16 +28,14 @@ fn main() {
     // GO OVER DIRECTORY AND MAKE CHANGES
     for file in dir {
         let (path, filename, extension, original_name) =
-            match process_dir_entry(&file, args.include_ext, &reg, verbose) {
+            match process_dir_entry(&file, args.include_ext, &reg) {
                 Ok(e) => e,
                 Err(_) => continue,
             };
-        if verbose {
-            println!(
-                "path: {}, filename: {}, extension: {}",
-                path, filename, extension
-            );
-        }
+        info!(
+            "path: {}, filename: {}, extension: {}",
+            path, filename, extension
+        );
 
         let filename = remove_inside_brackets(&filename, &args.remove_tags);
         let filename = fix_spaces(filename, &args.fix_spaces);
@@ -55,6 +56,7 @@ fn main() {
         }
 
         names.push((original_name, final_name));
+        info!("------");
     }
 
     // LIST CHANGES AND ASK IF USER THAY WANT TO PROCEED
@@ -78,16 +80,15 @@ fn main() {
     // RENAMING
     println!("Renaming... ");
     for (a, b) in names {
-        if verbose {
-            print!("{} -> {}", a.to_str().unwrap(), b.to_str().unwrap());
-        }
+        info!("{} -> {}", a.to_str().unwrap(), b.to_str().unwrap());
         match fs::rename(a, b) {
             Ok(()) => {
-                if verbose {
-                    println!()
-                }
+                info!("Ok");
             }
-            Err(err) => println!("Error while renaming: {}", err),
+            Err(err) => {
+                eprintln!("Error while renaming: {}", err);
+                error!("{}", err);
+            }
         }
     }
     println!("Done!")
@@ -124,21 +125,16 @@ fn process_dir_entry(
     entry: &std::result::Result<std::fs::DirEntry, std::io::Error>,
     include_ext: bool,
     file_match: &Regex,
-    verbose: bool,
 ) -> Result<(String, String, String, std::path::PathBuf), ()> {
     use std::path::PathBuf;
-    if verbose {
-        print!("processing {:?}... ", &entry);
-    }
+    info!("processing {:?}... ", &entry);
 
     let entry: PathBuf = match entry {
         Ok(entry) => {
             match entry.file_type() {
                 Ok(file_type) => {
                     if !file_type.is_file() {
-                        if verbose {
-                            println!("skipped");
-                        }
+                        warn!("skipped");
                         return Err(());
                     }
                 }

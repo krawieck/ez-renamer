@@ -1,8 +1,8 @@
 use crate::args_parser::Args;
+use log::info;
 
 pub fn trim(string: &str, args: &Args) -> String {
     use regex::Regex;
-    // TODO: set verbose as env variable and use it here
     let mut string = string;
     let mut regs: Vec<Regex> = vec![];
 
@@ -13,7 +13,7 @@ pub fn trim(string: &str, args: &Args) -> String {
                 regex::escape(&args.trim_right_with)
             ))
             .unwrap(),
-        )
+        );
     }
 
     if args.trim_right_after != "" {
@@ -45,6 +45,9 @@ pub fn trim(string: &str, args: &Args) -> String {
             .unwrap(),
         )
     }
+
+    info!("trimming regexes {:#?}", regs);
+
     for reg in regs {
         string = match reg.captures(&string) {
             Some(ref capture) => capture.name("result").unwrap().as_str(),
