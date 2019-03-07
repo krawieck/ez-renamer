@@ -1,104 +1,107 @@
-use regex::Regex;
+use crate::args_parser::Args;
 
-pub fn trim_right_with(string: &str, from: &str) -> String {
-    if from == "" {
-        return string.to_owned();
-    }
-    let from: String = regex::escape(from);
-    let reg = Regex::new(&format!("(?P<result>.*){}.*", from)).unwrap();
-    reg.captures(&string)
-        .unwrap()
-        .name("result")
-        .unwrap()
-        .as_str()
-        .to_owned()
-}
+pub fn trim(string: &str, args: &Args) -> String {
+    use regex::Regex;
+    // TODO: set verbose as env variable and use it here
+    let mut string = string;
+    let mut regs: Vec<Regex> = vec![];
 
-pub fn trim_right_after(string: &str, after: &str) -> String {
-    if after == "" {
-        return string.to_owned();
+    if args.trim_right_with != "" {
+        regs.push(
+            Regex::new(&format!(
+                "(?P<result>.*){}.*",
+                regex::escape(&args.trim_right_with)
+            ))
+            .unwrap(),
+        )
     }
-    let after: String = regex::escape(after);
-    println!("after {}", after);
-    let reg = Regex::new(&format!("(?P<result>.*{}).*", after)).unwrap();
-    reg.captures(&string)
-        .unwrap()
-        .name("result")
-        .unwrap()
-        .as_str()
-        .to_owned()
-}
 
-pub fn trim_left_with(string: &str, from: &str) -> String {
-    if from == "" {
-        return string.to_owned();
+    if args.trim_right_after != "" {
+        regs.push(
+            Regex::new(&format!(
+                "(?P<result>.*{}).*",
+                regex::escape(&args.trim_right_after)
+            ))
+            .unwrap(),
+        )
     }
-    let from: String = regex::escape(from);
-    let reg = Regex::new(&format!(".*{}(?P<result>.*)", from)).unwrap();
-    reg.captures(&string)
-        .unwrap()
-        .name("result")
-        .unwrap()
-        .as_str()
-        .to_owned()
-}
 
-pub fn trim_left_after(string: &str, after: &str) -> String {
-    if after == "" {
-        return string.to_owned();
+    if args.trim_left_with != "" {
+        regs.push(
+            Regex::new(&format!(
+                ".*{}(?P<result>.*)",
+                regex::escape(&args.trim_left_with)
+            ))
+            .unwrap(),
+        )
     }
-    let after: String = regex::escape(after);
-    println!("after {}", after);
-    let reg = Regex::new(&format!(".*(?P<result>{}.*)", after)).unwrap();
-    reg.captures(&string)
-        .unwrap()
-        .name("result")
-        .unwrap()
-        .as_str()
-        .to_owned()
+
+    if args.trim_left_after != "" {
+        regs.push(
+            Regex::new(&format!(
+                ".*(?P<result>{}.*)",
+                regex::escape(&args.trim_left_after)
+            ))
+            .unwrap(),
+        )
+    }
+    println!("{:?}", regs);
+    for reg in regs {
+        string = match reg.captures(&string) {
+            Some(ref capture) => capture.name("result").unwrap().as_str(),
+            None => string,
+        }
+    }
+
+    string.to_owned()
 }
 
 #[cfg(test)]
 mod tests {
     #[test]
-    fn test_trim_right_after() {
+    fn test_trim() {
+        use crate::args_parser::Args;
+
+        let mut args = Args::new();
+
         assert_eq!(
-            super::trim_right_after("black mirror bandersnatch [x265] [1080p]", "snatch"),
+            super::trim("black mirror bandersnatch [x265] [1080p]", &args),
+            String::from("black mirror bandersnatch [x265] [1080p]")
+        );
+
+        args.trim_right_after = String::from("snatch");
+        assert_eq!(
+            super::trim("black mirror bandersnatch [x265] [1080p]", &args),
             String::from("black mirror bandersnatch")
         );
 
+        args.trim_right_after = String::new();
+        args.trim_right_with = String::from("[x26");
         assert_eq!(
-            super::trim_right_after("black mirror bandersnatch", ""),
-            String::from("black mirror bandersnatch")
-        );
-    }
-
-    #[test]
-    fn test_trim_right_with() {
-        assert_eq!(
-            super::trim_right_with("black mirror bandersnatch [x265] [1080p]", "[x26"),
+            super::trim("black mirror bandersnatch [x265] [1080p]", &args),
             String::from("black mirror bandersnatch ")
         );
 
-        assert_eq!(
-            super::trim_right_with("black mirror bandersnatch", ""),
-            String::from("black mirror bandersnatch")
-        );
-    }
+        args.trim_right_with = String::new();
+        args.trim_left_after = String::from("black");
 
-    #[test]
-    fn trim_left_after() {
         assert_eq!(
-            super::trim_left_after("black mirror bandersnatch", ""),
+            super::trim("[HoriibelSubs] black mirror bandersnatch", &args),
             String::from("black mirror bandersnatch")
         );
-    }
 
-    #[test]
-    fn trim_left_with() {
+        args.trim_left_after = String::new();
+        args.trim_left_with = String::from("ubs]");
         assert_eq!(
-            super::trim_left_with("black mirror bandersnatch", ""),
-            String::from("black mirror bandersnatch")
+            super::trim("[HoriibelSubs] black mirror bandersnatch", &args),
+            String::from(" black mirror bandersnatch")
         );
+
+        assert_eq!(
+            super::trim("fnaewuofajdsnfawkjenfkjandskjfawhebfouiabsnjdnfai", &args),
+            String::from("fnaewuofajdsnfawkjenfkjandskjfawhebfouiabsnjdnfai")
+        );
+
+        assert_eq!(super::trim("", &args), String::from(""));
     }
 }
