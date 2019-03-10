@@ -1,5 +1,5 @@
 [package]
-name = "ez-renamer"
+name = "ezr"
 description = "Eziest renamer for pirated content!"
 version = "0.1.0"
 authors = ["krawieck <fil.krawczyk@gmail.com>"]
