@@ -4,6 +4,7 @@ extern crate lazy_static;
 extern crate log;
 extern crate pretty_env_logger;
 extern crate regex;
+extern crate structopt;
 
 mod args_parser;
 mod init;
@@ -13,11 +14,12 @@ use args_parser::Args;
 use log::{error, info, warn};
 use regex::Regex;
 use std::{env, fs, io, process};
+use structopt::StructOpt;
 
 fn main() {
     pretty_env_logger::init();
     // pretty_env_logger::formatted_builder();
-    let args = Args::parse();
+    let args = Args::from_args();
     let verbose = args.verbose;
     info!("args: {:#?}", env::args());
     info!("matches: {:#?}", args);

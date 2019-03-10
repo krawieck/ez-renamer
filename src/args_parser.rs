@@ -1,18 +1,90 @@
 use clap;
+use structopt::StructOpt;
 
-#[derive(Debug)]
+#[derive(StructOpt, Debug)]
+#[structopt(name = "ez-renamer")]
 pub struct Args {
+    /// regular expression for files that should be renamed
+    #[structopt(name = "file-match", default_value = ".")]
     pub file_match: String,
+    /// directory where should this program look for files
+    #[structopt(name = "dir", long, default_value = ".")]
     pub directory: std::path::PathBuf,
+    /// becomes a bit louder
+    #[structopt(long, short)]
     pub verbose: bool,
+    /// includes extensions in renaming process
+    #[structopt(name = "include-ext", long, short = "e")]
     pub include_ext: bool,
+    /// whatever you give is replaced by space (but only single chars)
+    ///
+    /// example:
+    ///
+    /// `--fix-spaces="_"` results in:
+    ///
+    /// "the_office_[720p]_[x265]" -> "the office [720p] [x265]"
+    #[structopt(name = "fix-spaces", long, short = "s", default_value = "")]
     pub fix_spaces: String,
+    /// remove tags, they're usually inside [] or (). e.g. -s "() []"
+    ///
+    /// Syntax for this argument should be '<opening bracket><closing
+    /// bracket> <repeat>'
+    ///
+    /// example:
+    ///
+    /// ezr -s "[] ()"
+    ///
+    /// "Mind Field S03E02 (2018) [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02.mkv"
+    #[structopt(name = "remove-tags", long = "rmtags", short = "t", default_value = "")]
     pub remove_tags: String,
+    /// Trim after the given sequence to the right
+    ///
+    /// example:
+    ///
+    /// ezr --trim-right-after [1080p]
+    ///
+    /// "Mind Field S03E02 [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02 [1080p].mkv"
+    #[structopt(name = "trim-right-after", long, default_value = "")]
     pub trim_right_after: String,
+    /// Trim with the given sequence to the right
+    ///
+    /// example:
+    ///
+    /// ezr --trim-right-with [1080p]
+    ///
+    /// "Mind Field S03E02 [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02 .mkv"
+    #[structopt(name = "trim-right-with", long, default_value = "")]
     pub trim_right_with: String,
+    /// Trim after the given sequence to the left.
+    ///
+    /// example:
+    ///
+    /// ezr --trim-left-with Mind
+    ///
+    /// "[HorribleSubs] Mind Field S03E02.mkv" -> "Mind Field S03E02.mkv"
+    #[structopt(name = "trim-left-after", long, default_value = "")]
     pub trim_left_after: String,
+    /// Trim with the given sequence to the left.
+    ///
+    /// example:
+    ///
+    /// ezr --trim-left-with ubs]
+    ///
+    /// "[HorribleSubs] Mind Field S03E02.mkv" -> "Mind Field S03E02.mkv"
+    #[structopt(name = "trim-left-with", long, default_value = "")]
     pub trim_left_with: String,
+    /// By default ez-renamer removes multiple spaces (cleans up)
+    /// after it's done. This flag stops him from doing that
+    #[structopt(name = "dont-cleanup", long)]
     pub dont_cleanup: bool,
+    /// deletes this phrase(s) from names
+    ///
+    /// example:
+    ///
+    /// ezr -d "[WEBRip] [720p] [YTS.AM]"
+    ///
+    /// "Green Book (2018) [WEBRip] [720p] [YTS.AM]" -> "Green Book (2018)"
+    #[structopt(long, short, default_value = "")]
     pub delete: String,
 }
 
