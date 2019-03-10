@@ -1,4 +1,3 @@
-use clap;
 use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
