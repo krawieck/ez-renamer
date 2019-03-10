@@ -1,6 +1,4 @@
-extern crate clap;
 extern crate exitcode;
-extern crate lazy_static;
 extern crate log;
 extern crate pretty_env_logger;
 extern crate regex;
