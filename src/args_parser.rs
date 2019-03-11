@@ -85,6 +85,9 @@ pub struct Args {
     /// "Green Book (2018) [WEBRip] [720p] [YTS.AM]" -> "Green Book (2018)"
     #[structopt(long, short, default_value = "")]
     pub delete: String,
+    /// recursively goes through directories
+    #[structopt(short, long)]
+    pub recursive: bool,
 }
 
 impl Args {
@@ -104,6 +107,7 @@ impl Args {
             trim_right_with: String::new(),
             delete: String::new(),
             dont_cleanup: false,
+            recursive: false,
         }
     }
 }
