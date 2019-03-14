@@ -9,55 +9,27 @@ mod init;
 mod trim;
 
 use args_parser::Args;
-use log::{error, info, warn};
-use regex::Regex;
+use log::{error, info};
 use std::{env, fs, io, process};
 use structopt::StructOpt;
 
 fn main() {
+    use std::path::PathBuf;
+
     pretty_env_logger::init();
     // pretty_env_logger::formatted_builder();
     let args = Args::from_args();
-    let verbose = args.verbose;
+    // let verbose = args.verbose;
     info!("args: {:#?}", env::args());
     info!("matches: {:#?}", args);
-    let dir: fs::ReadDir = init::initialize(&args.directory);
-    let mut names: Vec<(std::path::PathBuf, std::path::PathBuf)> = vec![];
-
-    let reg = Regex::new(&args.file_match).expect("file match ain't valid");
-
+    let dir_content = init::initialize(&args);
+    let mut names: Vec<(PathBuf, PathBuf)> = vec![];
     // GO OVER DIRECTORY AND MAKE CHANGES
-    for file in dir {
-        let (path, filename, extension, original_name) =
-            match process_dir_entry(&file, args.include_ext, &reg) {
-                Ok(e) => e,
-                Err(_) => continue,
-            };
-        info!(
-            "path: {}, filename: {}, extension: {}",
-            path, filename, extension
-        );
-
-        let filename = remove_inside_brackets(&filename, &args.remove_tags);
-        let filename = fix_spaces(filename, &args.fix_spaces);
-        let filename = delete(&filename, &args.delete);
-        let filename = trim::trim(&filename, &args);
-
-        let filename = if !args.dont_cleanup {
-            cleanup_spaces(&filename)
-        } else {
-            filename
-        };
-
-        let mut final_name = std::path::PathBuf::from(path);
-        final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
-
-        if !args.include_ext {
-            final_name.set_extension(extension);
+    for file in dir_content {
+        match process_names(file.path(), &args) {
+            Ok(f) => names.push(f),
+            Err(_) => {}
         }
-
-        names.push((original_name, final_name));
-        info!("------");
     }
 
     // LIST CHANGES AND ASK IF USER THAY WANT TO PROCEED
@@ -69,9 +41,9 @@ fn main() {
         );
     }
 
+    // Ask user if they wanna proceed
     print!("Should I proceed? [Y/n] ");
     io::Write::flush(&mut io::stdout()).expect("flush failed!");
-
     let should_i_proceed = helpers::get_input();
     if !(should_i_proceed == "" || should_i_proceed.starts_with("y")) {
         println!("exiting...");
@@ -93,6 +65,38 @@ fn main() {
         }
     }
     println!("Done!")
+}
+
+fn process_names(
+    file: std::path::PathBuf,
+    args: &Args,
+) -> Result<(std::path::PathBuf, std::path::PathBuf), ()> {
+    let (path, filename, extension, original_name) = process_dir_entry(file, args.include_ext);
+    info!(
+        "path: {}, filename: {}, extension: {}",
+        path, filename, extension
+    );
+
+    let filename = remove_inside_brackets(&filename, &args.remove_tags);
+    let filename = fix_spaces(filename, &args.fix_spaces);
+    let filename = delete(&filename, &args.delete);
+    let filename = trim::trim(&filename, &args);
+
+    let filename = if !args.dont_cleanup {
+        cleanup_spaces(&filename)
+    } else {
+        filename
+    };
+
+    let mut final_name = std::path::PathBuf::from(path);
+    final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
+
+    if !args.include_ext {
+        final_name.set_extension(extension);
+    }
+
+    info!("------");
+    return Ok((original_name, final_name));
 }
 
 fn cleanup_spaces(input: &str) -> String {
@@ -123,35 +127,10 @@ fn fix_spaces(input: String, replacer: &str) -> String {
 }
 
 fn process_dir_entry(
-    entry: &std::result::Result<std::fs::DirEntry, std::io::Error>,
+    entry: std::path::PathBuf,
     include_ext: bool,
-    file_match: &Regex,
-) -> Result<(String, String, String, std::path::PathBuf), ()> {
-    use std::path::PathBuf;
+) -> (String, String, String, std::path::PathBuf) {
     info!("processing {:?}... ", &entry);
-
-    let entry: PathBuf = match entry {
-        Ok(entry) => {
-            match entry.file_type() {
-                Ok(file_type) => {
-                    if !file_type.is_file() {
-                        warn!("skipped");
-                        return Err(());
-                    }
-                }
-                Err(_) => return Err(()),
-            }
-            if !file_match.is_match(entry.file_name().to_str().unwrap()) {
-                return Err(());
-            }
-
-            entry.path()
-        }
-        Err(err) => {
-            eprintln!("Error happened when reading dir: \"{}\"", err);
-            return Err(());
-        }
-    };
 
     let result = (
         String::from(entry.parent().unwrap().to_str().unwrap()),
@@ -163,7 +142,7 @@ fn process_dir_entry(
         String::from(entry.extension().unwrap_or_default().to_str().unwrap()),
         entry,
     );
-    return Ok(result);
+    return result;
 }
 
 fn remove_inside_brackets(input: &String, brackets: &String) -> String {

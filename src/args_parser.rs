@@ -1,11 +1,20 @@
+use regex::Regex;
 use structopt::StructOpt;
+
+fn parse_regex(src: &str) -> Result<Regex, regex::Error> {
+    Regex::new(src)
+}
 
 #[derive(StructOpt, Debug)]
 #[structopt(name = "ez-renamer")]
 pub struct Args {
     /// regular expression for files that should be renamed
-    #[structopt(name = "file-match", default_value = ".")]
-    pub file_match: String,
+    #[structopt(
+        parse(try_from_str = "parse_regex"),
+        name = "file-match",
+        default_value = "."
+    )]
+    pub file_match: Regex,
     /// directory where should this program look for files
     #[structopt(name = "dir", long, default_value = ".")]
     pub directory: std::path::PathBuf,
@@ -93,9 +102,10 @@ pub struct Args {
 impl Args {
     #[cfg(test)]
     pub fn new() -> Self {
+        use regex::Regex;
         use std::path::PathBuf;
         Args {
-            file_match: String::new(),
+            file_match: Regex::new(".").unwrap(),
             directory: PathBuf::new(),
             verbose: false,
             include_ext: false,
