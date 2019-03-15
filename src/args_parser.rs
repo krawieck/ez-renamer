@@ -102,6 +102,9 @@ pub struct Args {
     /// -q results in program just asking if u wanna proceed, and -qq results in program not letting anything into stdout
     #[structopt(short, parse(from_occurrences))]
     pub quiet: u8,
+    /// confirms the rename, recomended only if you know what you're doing
+    #[structopt(short)]
+    pub yes: bool,
 }
 
 impl Args {
@@ -124,6 +127,7 @@ impl Args {
             dont_cleanup: false,
             recursive: false,
             quiet: 0,
+            yes: false,
         }
     }
 }

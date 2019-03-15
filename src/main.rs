@@ -43,19 +43,24 @@ fn main() {
         }
     }
 
-    // Ask user if they wanna proceed
-    if args.quiet < 2 {
-        print!("Should I proceed? [Y/n] ");
-    }
-    io::Write::flush(&mut io::stdout()).expect("flush failed!");
-    let should_i_proceed = helpers::get_input();
-    if !(should_i_proceed == "" || should_i_proceed.starts_with("y")) {
-        println!("exiting...");
-        process::exit(exitcode::OK)
+    if !args.yes {
+        // Ask user if they wanna proceed
+        if args.quiet < 2 {
+            print!("Should I proceed? [Y/n] ");
+        }
+        io::Write::flush(&mut io::stdout()).expect("flush failed!");
+        let should_i_proceed = helpers::get_input();
+        if !(should_i_proceed == "" || should_i_proceed.starts_with("y")) {
+            println!("exiting...");
+            process::exit(exitcode::OK)
+        }
     }
 
     // RENAMING
-    println!("Renaming... ");
+
+    if args.quiet < 1 {
+        println!("Renaming... ");
+    }
     for (a, b) in names {
         info!("{} -> {}", a.to_str().unwrap(), b.to_str().unwrap());
         match fs::rename(a, b) {
@@ -63,12 +68,16 @@ fn main() {
                 info!("Ok");
             }
             Err(err) => {
-                eprintln!("Error while renaming: {}", err);
+                if args.quiet < 2 {
+                    eprintln!("Error while renaming: {}", err);
+                }
                 error!("{}", err);
             }
         }
     }
-    println!("Done!")
+    if args.quiet < 1 {
+        println!("Done!")
+    }
 }
 
 fn process_names(
