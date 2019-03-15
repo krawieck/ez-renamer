@@ -33,16 +33,20 @@ fn main() {
     }
 
     // LIST CHANGES AND ASK IF USER THAY WANT TO PROCEED
-    for (from, to) in &names {
-        println!(
-            "{} -> {}",
-            from.as_path().to_str().unwrap(),
-            to.as_path().to_str().unwrap()
-        );
+    if args.quiet < 1 {
+        for (from, to) in &names {
+            println!(
+                "{} -> {}",
+                from.as_path().to_str().unwrap(),
+                to.as_path().to_str().unwrap()
+            );
+        }
     }
 
     // Ask user if they wanna proceed
-    print!("Should I proceed? [Y/n] ");
+    if args.quiet < 2 {
+        print!("Should I proceed? [Y/n] ");
+    }
     io::Write::flush(&mut io::stdout()).expect("flush failed!");
     let should_i_proceed = helpers::get_input();
     if !(should_i_proceed == "" || should_i_proceed.starts_with("y")) {

@@ -97,6 +97,11 @@ pub struct Args {
     /// recursively goes through directories
     #[structopt(short, long)]
     pub recursive: bool,
+    /// program is much quieter, it's recommended only if you know what you're doing
+    ///
+    /// -q results in program just asking if u wanna proceed, and -qq results in program not letting anything into stdout
+    #[structopt(short, parse(from_occurrences))]
+    pub quiet: u8,
 }
 
 impl Args {
@@ -118,6 +123,7 @@ impl Args {
             delete: String::new(),
             dont_cleanup: false,
             recursive: false,
+            quiet: 0,
         }
     }
 }
