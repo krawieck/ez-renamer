@@ -18,9 +18,6 @@ pub struct Args {
     /// directory where should this program look for files
     #[structopt(name = "dir", long, default_value = ".")]
     pub directory: std::path::PathBuf,
-    /// becomes a bit louder
-    #[structopt(long, short)]
-    pub verbose: bool,
     /// includes extensions in renaming process
     #[structopt(name = "include-ext", long, short = "e")]
     pub include_ext: bool,
@@ -115,7 +112,6 @@ impl Args {
         Args {
             file_match: Regex::new(".").unwrap(),
             directory: PathBuf::new(),
-            verbose: false,
             include_ext: false,
             fix_spaces: String::new(),
             remove_tags: String::new(),

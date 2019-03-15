@@ -15,11 +15,8 @@ use structopt::StructOpt;
 
 fn main() {
     use std::path::PathBuf;
-
-    pretty_env_logger::init();
-    // pretty_env_logger::formatted_builder();
+    pretty_env_logger::init(); // RUST_LOG=ezr before command to enable logging
     let args = Args::from_args();
-    // let verbose = args.verbose;
     info!("args: {:#?}", env::args());
     info!("matches: {:#?}", args);
     let dir_content = init::initialize(&args);
