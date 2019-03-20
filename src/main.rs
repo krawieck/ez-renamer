@@ -20,14 +20,9 @@ fn main() {
     info!("args: {:#?}", env::args());
     info!("matches: {:#?}", args);
     let dir_content = init::initialize(&args);
-    let mut names: Vec<(PathBuf, PathBuf)> = vec![];
+    
     // GO OVER DIRECTORY AND MAKE CHANGES
-    for file in dir_content {
-        match process_names(file.path(), &args) {
-            Ok(f) => names.push(f),
-            Err(_) => {}
-        }
-    }
+    let names: Vec<(PathBuf, PathBuf)> = dir_content.iter().map(|a| process_names(a.path(), &args)).filter_map(|a| a.ok()).collect();
 
     // LIST CHANGES AND ASK IF USER THAY WANT TO PROCEED
     if args.quiet < 1 {
