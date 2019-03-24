@@ -77,19 +77,31 @@ fn main() {
 }
 
 fn process_names(
-    file: std::path::PathBuf,
+    entry: std::path::PathBuf,
     args: &Args,
 ) -> Result<(std::path::PathBuf, std::path::PathBuf), ()> {
-    let (path, filename, extension, original_name) = process_dir_entry(file, args.include_ext);
+    use trim::trim;
+    let (path, filename, extension) = {
+        (
+            String::from(entry.parent().unwrap().to_str().unwrap()),
+            if args.include_ext {
+                String::from(entry.file_name().unwrap().to_str().unwrap())
+            } else {
+                String::from(entry.file_stem().unwrap().to_str().unwrap())
+            },
+            String::from(entry.extension().unwrap_or_default().to_str().unwrap()),
+        )
+    };
+
     info!(
         "path: {}, filename: {}, extension: {}",
         path, filename, extension
     );
 
     let filename = remove_inside_brackets(&filename, &args.remove_tags);
-    let filename = fix_spaces(filename, &args.fix_spaces);
+    let filename = fix_spaces(&filename, &args.fix_spaces);
     let filename = delete(&filename, &args.delete);
-    let filename = trim::trim(&filename, &args);
+    let filename = trim(&filename, &args);
 
     let filename = if !args.dont_cleanup {
         cleanup_spaces(&filename)
@@ -105,7 +117,7 @@ fn process_names(
     }
 
     info!("------");
-    return Ok((original_name, final_name));
+    Ok((entry, final_name))
 }
 
 fn cleanup_spaces(input: &str) -> String {
@@ -127,38 +139,24 @@ fn cleanup_spaces(input: &str) -> String {
     output.trim().to_owned()
 }
 
-fn fix_spaces(input: String, replacer: &str) -> String {
-    let mut output: String = input.clone();
+/// Replaces dots or underscores or any other character with spaces
+///
+/// example use:
+/// `fix_spaces("Love_Death_and_Robots_S01E14.Zima.Blue", "_.") -> "Love Death Robots S01E14 Zima Blue"`b
+///
+fn fix_spaces(input: &str, replacer: &str) -> String {
+    let mut output: String = input.to_string();
     for x in replacer.chars() {
         output = output.replace(x, " ");
     }
     output
 }
 
-fn process_dir_entry(
-    entry: std::path::PathBuf,
-    include_ext: bool,
-) -> (String, String, String, std::path::PathBuf) {
-    info!("processing {:?}... ", &entry);
-
-    let result = (
-        String::from(entry.parent().unwrap().to_str().unwrap()),
-        if include_ext {
-            String::from(entry.file_name().unwrap().to_str().unwrap())
-        } else {
-            String::from(entry.file_stem().unwrap().to_str().unwrap())
-        },
-        String::from(entry.extension().unwrap_or_default().to_str().unwrap()),
-        entry,
-    );
-    return result;
-}
-
-fn remove_inside_brackets(input: &String, brackets: &String) -> String {
+fn remove_inside_brackets(input: &str, brackets: &String) -> String {
     use exitcode;
     use regex::Regex;
 
-    let mut output = input.clone();
+    let mut output = input.to_owned();
     for s in brackets.split_whitespace() {
         output = {
             if s.len() != 2 {
@@ -178,9 +176,13 @@ fn remove_inside_brackets(input: &String, brackets: &String) -> String {
             reg.replace_all(&output, "").to_string()
         };
     }
-    output
+    output.to_owned()
 }
 
+/// deletes some phrase
+///
+/// example:
+/// `delete("LDR S01E2 720p x265-PSA", "720p x265-PSA") -> "LDR S01E2 "`
 fn delete(input: &str, to_be_deleted: &str) -> String {
     input.replace(to_be_deleted, "")
 }
@@ -211,7 +213,7 @@ mod tests {
         let mock_input = String::from("black_mirror_bandersnatch.[720p].(x264)");
         let mock_replacer = "._";
         assert_eq!(
-            super::fix_spaces(mock_input, mock_replacer),
+            super::fix_spaces(&mock_input, mock_replacer),
             String::from("black mirror bandersnatch [720p] (x264)")
         );
     }
