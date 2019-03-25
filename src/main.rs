@@ -13,7 +13,7 @@ use log::{error, info};
 use std::{env, fs, process};
 use structopt::StructOpt;
 
-fn main() {
+fn main() -> Result<(), std::io::Error> {
     use std::path::PathBuf;
     pretty_env_logger::init(); // RUST_LOG=ezr before command to enable logging
     let args = Args::from_args();
@@ -56,7 +56,7 @@ fn main() {
         };
         if !(proceed == 'Y' || proceed == 'y') {
             println!("exiting...");
-            process::exit(exitcode::OK)
+            return Ok(());
         }
     }
 
@@ -81,7 +81,8 @@ fn main() {
     }
     if args.quiet < 1 {
         println!("Done!")
-    }
+    };
+    Ok(())
 }
 
 /// Changes names of the files based on the user's requirements
