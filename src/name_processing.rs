@@ -47,6 +47,10 @@ pub fn process_name(
     Ok((entry, final_name))
 }
 
+/// Removes trailing spaces and any double spaces
+///
+/// example:
+/// `cleanup_spaces("  asdfasdf  sd   asdfk   ") -> "asdfasdf sd asdfk"`
 fn cleanup_spaces(input: &str) -> String {
     let mut prev_was_space = false;
     let mut output = String::new();
@@ -69,7 +73,7 @@ fn cleanup_spaces(input: &str) -> String {
 /// Replaces dots or underscores or any other character with spaces
 ///
 /// example use:
-/// `fix_spaces("Love_Death_and_Robots_S01E14.Zima.Blue", "_.") -> "Love Death Robots S01E14 Zima Blue"`b
+/// `fix_spaces("Love_Death_and_Robots_S01E14.Zima.Blue", "_.") -> "Love Death Robots S01E14 Zima Blue"`
 ///
 fn fix_spaces(input: &str, replacer: &str) -> String {
     let mut output: String = input.to_string();
@@ -79,6 +83,10 @@ fn fix_spaces(input: &str, replacer: &str) -> String {
     output
 }
 
+/// Removes contents inside brackets (with brackets)
+///
+/// example:
+/// `remove_inside_brackets("black mirror s03e01 (2018) [x265] [1080p]", "[]()") -> "black mirror s03e01   "`
 fn remove_inside_brackets(input: &str, brackets: &String) -> String {
     use exitcode;
     use regex::Regex;
@@ -107,7 +115,7 @@ fn remove_inside_brackets(input: &str, brackets: &String) -> String {
     output.to_owned()
 }
 
-/// deletes some phrase
+/// Deletes some phrase
 ///
 /// example:
 /// `delete("LDR S01E2 720p x265-PSA", "720p x265-PSA") -> "LDR S01E2 "`
