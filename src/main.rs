@@ -19,10 +19,9 @@ fn main() {
     let args = Args::from_args();
     info!("args: {:#?}", env::args());
     info!("matches: {:#?}", args);
-    let dir_content = init::initialize(&args);
 
     // GO OVER DIRECTORY AND MAKE CHANGES
-    let names: Vec<(PathBuf, PathBuf)> = dir_content
+    let names: Vec<(PathBuf, PathBuf)> = init::initialize(&args)
         .iter()
         .map(|a| process_names(a.path(), &args))
         .filter_map(|a| a.ok())
