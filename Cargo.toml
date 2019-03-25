@@ -2,7 +2,6 @@
 name = "ezr"
 version = "0.1.0"
 authors = ["krawieck <fil.krawczyk@gmail.com>"]
-license = "MIT"
 license-file = "LICENSE"
 description = "Rust CLI tool for batch renaming files. It's purposefuly not very featureful because it's meant to be used for just some quick renaming."
 readme = "README.md"
