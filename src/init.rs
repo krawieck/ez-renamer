@@ -2,6 +2,8 @@ use crate::args_parser::Args;
 use exitcode;
 use log::info;
 
+/// Returns `Vec` of all DirEntries that pass requirements
+/// given by users, and also in general are valid
 pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
     use fs::{read_dir, DirEntry};
     use std::{fs, process};
@@ -10,7 +12,7 @@ pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
         let mut entries_to_check: Vec<DirEntry> = read_dir(&args.directory)
             .expect("couldn't read given directory")
             .filter_map(|x| {
-                info!("suface layer {:?}", x);
+                info!("surface layer {:?}", x);
                 x.ok()
             })
             .collect();

@@ -84,6 +84,8 @@ fn main() {
     }
 }
 
+/// Changes names of the files based on the user's requirements
+/// and also returns touple with original name and changed name
 fn process_names(
     entry: std::path::PathBuf,
     args: &Args,
