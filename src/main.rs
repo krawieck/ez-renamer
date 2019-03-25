@@ -21,11 +21,11 @@ fn main() {
     info!("matches: {:#?}", args);
 
     // GO OVER DIRECTORY AND MAKE CHANGES
-    let names: Vec<(PathBuf, PathBuf)> = init::initialize(&args)
+    let names = init::initialize(&args)
         .iter()
         .map(|a| process_names(a.path(), &args))
         .filter_map(|a| a.ok())
-        .collect();
+        .collect::<Vec<(PathBuf, PathBuf)>>();
 
     // LIST CHANGES AND ASK IF USER THAY WANT TO PROCEED
     if args.quiet < 1 {
