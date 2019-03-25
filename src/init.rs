@@ -5,7 +5,7 @@ use log::info;
 /// Returns `Vec` of all DirEntries that pass requirements
 /// given by users, and also in general are valid
 pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
-    use fs::{read_dir, DirEntry};
+    use std::fs::{read_dir, DirEntry};
     use std::{fs, process};
 
     if args.recursive {
