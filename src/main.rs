@@ -10,7 +10,7 @@ mod trim;
 
 use args_parser::Args;
 use log::{error, info};
-use std::{env, fs, io, process};
+use std::{env, fs, process};
 use structopt::StructOpt;
 
 fn main() {
@@ -40,13 +40,22 @@ fn main() {
     }
 
     if !args.yes {
+        use std::io;
         // Ask user if they wanna proceed
         if args.quiet < 2 {
             print!("Should I proceed? [Y/n] ");
         }
         io::Write::flush(&mut io::stdout()).expect("flush failed!");
-        let should_i_proceed = helpers::get_input();
-        if !(should_i_proceed == "" || should_i_proceed.starts_with("y")) {
+
+        let proceed = {
+            let mut input = String::new();
+            match io::stdin().read_line(&mut input) {
+                Ok(_goes_into_input_above) => {}
+                Err(_no_updates_is_fine) => {}
+            }
+            input.trim().chars().next().unwrap_or('y')
+        };
+        if !(proceed == 'Y' || proceed == 'y') {
             println!("exiting...");
             process::exit(exitcode::OK)
         }
@@ -185,18 +194,6 @@ fn remove_inside_brackets(input: &str, brackets: &String) -> String {
 /// `delete("LDR S01E2 720p x265-PSA", "720p x265-PSA") -> "LDR S01E2 "`
 fn delete(input: &str, to_be_deleted: &str) -> String {
     input.replace(to_be_deleted, "")
-}
-
-mod helpers {
-    use std::io;
-    pub fn get_input() -> String {
-        let mut input = String::new();
-        match io::stdin().read_line(&mut input) {
-            Ok(_goes_into_input_above) => {}
-            Err(_no_updates_is_fine) => {}
-        }
-        input.trim().to_string()
-    }
 }
 
 #[cfg(test)]
