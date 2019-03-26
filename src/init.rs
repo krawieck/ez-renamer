@@ -34,6 +34,9 @@ pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
                     Err(_) => vec![],
                 };
                 entries_to_check.append(&mut m);
+                if args.include_dirs {
+                    final_entries.push(curr);
+                }
             } else {
                 final_entries.push(curr);
             }
@@ -41,7 +44,19 @@ pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
         final_entries
     } else {
         match fs::read_dir(&args.directory) {
-            Ok(files) => files.filter_map(|x| x.ok()).collect(),
+            Ok(files) => files
+                .filter_map(|x| x.ok())
+                .filter(|x| match x.file_type() {
+                    Ok(t) => {
+                        if args.include_dirs {
+                            false
+                        } else {
+                            !t.is_dir()
+                        }
+                    }
+                    Err(_) => false,
+                })
+                .collect(),
             Err(error) => {
                 eprintln!("Error: {}", error);
                 process::exit(error.raw_os_error().unwrap_or(exitcode::IOERR));

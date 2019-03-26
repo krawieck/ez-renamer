@@ -117,7 +117,7 @@ pub struct Args {
     pub yes: bool,
 
     /// include directories in renaming process
-    #[structopt(long)]
+    #[structopt(long = "include-dirs")]
     pub include_dirs: bool,
 }
 
@@ -141,6 +141,7 @@ impl Args {
             recursive: false,
             quiet: 0,
             yes: false,
+            include_dirs: false,
         }
     }
 }
