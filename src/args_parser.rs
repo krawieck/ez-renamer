@@ -15,12 +15,15 @@ pub struct Args {
         default_value = "."
     )]
     pub file_match: Regex,
+
     /// directory where should this program look for files
     #[structopt(name = "dir", long, default_value = ".")]
     pub directory: std::path::PathBuf,
+
     /// includes extensions in renaming process
     #[structopt(name = "include-ext", long, short = "e")]
     pub include_ext: bool,
+
     /// whatever you give is replaced by space (but only single chars)
     ///
     /// example:
@@ -30,6 +33,7 @@ pub struct Args {
     /// "the_office_[720p]_[x265]" -> "the office [720p] [x265]"
     #[structopt(name = "fix-spaces", long, short = "s", default_value = "")]
     pub fix_spaces: String,
+
     /// remove tags, they're usually inside [] or (). e.g. -s "() []"
     ///
     /// Syntax for this argument should be '<opening bracket><closing
@@ -42,6 +46,7 @@ pub struct Args {
     /// "Mind Field S03E02 (2018) [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02.mkv"
     #[structopt(name = "remove-tags", long = "rmtags", short = "t", default_value = "")]
     pub remove_tags: String,
+
     /// Trim after the given sequence to the right
     ///
     /// example:
@@ -51,6 +56,7 @@ pub struct Args {
     /// "Mind Field S03E02 [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02 [1080p].mkv"
     #[structopt(name = "trim-right-after", long, default_value = "")]
     pub trim_right_after: String,
+
     /// Trim with the given sequence to the right
     ///
     /// example:
@@ -60,6 +66,7 @@ pub struct Args {
     /// "Mind Field S03E02 [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02 .mkv"
     #[structopt(name = "trim-right-with", long, default_value = "")]
     pub trim_right_with: String,
+
     /// Trim after the given sequence to the left.
     ///
     /// example:
@@ -69,6 +76,7 @@ pub struct Args {
     /// "[HorribleSubs] Mind Field S03E02.mkv" -> "Mind Field S03E02.mkv"
     #[structopt(name = "trim-left-after", long, default_value = "")]
     pub trim_left_after: String,
+
     /// Trim with the given sequence to the left.
     ///
     /// example:
@@ -78,10 +86,12 @@ pub struct Args {
     /// "[HorribleSubs] Mind Field S03E02.mkv" -> "Mind Field S03E02.mkv"
     #[structopt(name = "trim-left-with", long, default_value = "")]
     pub trim_left_with: String,
+
     /// By default ez-renamer removes multiple spaces (cleans up)
     /// after it's done. This flag stops him from doing that
     #[structopt(name = "dont-cleanup", long)]
     pub dont_cleanup: bool,
+
     /// deletes this phrase(s) from names
     ///
     /// example:
@@ -91,17 +101,24 @@ pub struct Args {
     /// "Green Book (2018) [WEBRip] [720p] [YTS.AM]" -> "Green Book (2018)"
     #[structopt(long, short, default_value = "")]
     pub delete: String,
+
     /// recursively goes through directories
     #[structopt(short, long)]
     pub recursive: bool,
+
     /// program is much quieter, it's recommended only if you know what you're doing
     ///
     /// -q results in program just asking if u wanna proceed, and -qq results in program not letting anything into stdout
     #[structopt(short, parse(from_occurrences))]
     pub quiet: u8,
+
     /// confirms the rename, recomended only if you know what you're doing
     #[structopt(short)]
     pub yes: bool,
+
+    /// include directories in renaming process
+    #[structopt(long)]
+    pub include_dirs: bool,
 }
 
 impl Args {
