@@ -1,6 +1,6 @@
 [package]
 name = "ezr"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["krawieck <fil.krawczyk@gmail.com>"]
 license-file = "LICENSE"
 description = "Rust CLI tool for batch renaming files. It's purposefuly not very featureful because it's meant to be used for just some quick renaming."
