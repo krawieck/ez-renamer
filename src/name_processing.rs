@@ -37,7 +37,7 @@ pub fn process_name(
     };
 
     let mut final_name = std::path::PathBuf::from(path);
-    final_name.push(filename); // TODO: BUT DOES It WORK ON WINDOWS
+    final_name.push(filename);
 
     if !args.include_ext {
         final_name.set_extension(extension);
