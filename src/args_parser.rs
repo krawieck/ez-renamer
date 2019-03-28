@@ -2,7 +2,7 @@ use regex::Regex;
 use structopt::StructOpt;
 
 fn parse_regex(src: &str) -> Result<Regex, regex::Error> {
-    Regex::new(src)
+    Regex::new(&src.to_lowercase())
 }
 
 #[derive(StructOpt, Debug)]

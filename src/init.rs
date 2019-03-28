@@ -8,7 +8,7 @@ pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
     use std::fs::{read_dir, DirEntry};
     use std::{fs, process};
 
-    if args.recursive {
+    let entries: Vec<DirEntry> = if args.recursive {
         let mut entries_to_check: Vec<DirEntry> = read_dir(&args.directory)
             .expect("couldn't read given directory")
             .filter_map(|x| {
@@ -62,5 +62,6 @@ pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
                 process::exit(error.raw_os_error().unwrap_or(exitcode::IOERR));
             }
         }
-    }
+    };
+    entries.into_iter().filter(|x: &DirEntry| args.file_match.is_match(&x.file_name().to_str().unwrap().to_lowercase())).collect()
 }
