@@ -87,7 +87,7 @@ fn fix_spaces(input: &str, replacer: &str) -> String {
 ///
 /// example:
 /// `remove_inside_brackets("black mirror s03e01 (2018) [x265] [1080p]", "[]()") -> "black mirror s03e01   "`
-fn remove_inside_brackets(input: &str, brackets: &String) -> String {
+fn remove_inside_brackets(input: &str, brackets: &str) -> String {
     use exitcode;
     use regex::Regex;
     use std::process;
@@ -105,7 +105,7 @@ fn remove_inside_brackets(input: &str, brackets: &String) -> String {
             let beg = regex::escape(&beg.to_string());
             let end = regex::escape(&end.to_string());
 
-            let mut reg_str = String::from(beg);
+            let mut reg_str = beg;
             reg_str.push_str(".*?");
             reg_str.push_str(&end);
             let reg = Regex::new(&reg_str).expect("Dev messed sth up with removing brackets");

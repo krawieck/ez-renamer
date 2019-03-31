@@ -20,7 +20,7 @@ pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
         let mut final_entries: Vec<DirEntry> = vec![];
         // check first element in entries_to_check, if it's a dir,
         loop {
-            if entries_to_check.len() == 0 {
+            if entries_to_check.is_empty() {
                 break;
             }
             let curr = entries_to_check.swap_remove(0);
@@ -63,5 +63,11 @@ pub fn initialize(args: &Args) -> Vec<std::fs::DirEntry> {
             }
         }
     };
-    entries.into_iter().filter(|x: &DirEntry| args.file_match.is_match(&x.file_name().to_str().unwrap().to_lowercase())).collect()
+    entries
+        .into_iter()
+        .filter(|x: &DirEntry| {
+            args.file_match
+                .is_match(&x.file_name().to_str().unwrap().to_lowercase())
+        })
+        .collect()
 }
