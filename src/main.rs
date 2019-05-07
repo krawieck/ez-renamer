@@ -40,7 +40,7 @@ fn main() -> Result<(), std::io::Error> {
 			);
 		}
 	}
-
+	let mut is_yes = args.yes;
 	if !args.yes {
 		// Ask user if they wanna proceed
 		if args.quiet < 2 {
@@ -59,11 +59,15 @@ fn main() -> Result<(), std::io::Error> {
 		if !(proceed == 'Y' || proceed == 'y') {
 			println!("exiting...");
 			return Ok(());
+		} else {
+			is_yes = true;
 		}
 	}
 
+	if !is_yes {
+		return Ok(());
+	}
 	// RENAMING
-
 	if args.quiet < 1 {
 		println!("Renaming... ");
 	}
