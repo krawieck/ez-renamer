@@ -74,7 +74,6 @@ fn cleanup_spaces(input: &str) -> String {
 ///
 /// example use:
 /// `fix_spaces("Love_Death_and_Robots_S01E14.Zima.Blue", "_.") -> "Love Death Robots S01E14 Zima Blue"`
-///
 fn fix_spaces(input: &str, replacer: &str) -> String {
 	let mut output: String = input.to_string();
 	for x in replacer.chars() {
