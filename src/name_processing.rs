@@ -89,10 +89,15 @@ fn fix_spaces(input: &str, replacer: &str) -> String {
 fn remove_inside_brackets(input: &str, brackets: &str) -> String {
 	use exitcode;
 	use regex::Regex;
-	use std::process;
+	use std::{process, str};
 
 	let mut output = input.to_owned();
-	for s in brackets.split_whitespace() {
+	for s in brackets
+		.as_bytes()
+		.chunks(2)
+		.map(str::from_utf8)
+		.filter_map(|a| a.ok())
+	{
 		output = {
 			if s.len() != 2 {
 				eprintln!("Error: Brackets are not formatted correctly");
@@ -127,8 +132,14 @@ mod tests {
 	#[test]
 	fn test_remove_inside_brackets() {
 		let mock = String::from("black_mirror_bandersnatch_[720p]_(x264)");
-		let mock = super::remove_inside_brackets(&mock, &String::from("[] ()"));
+		let mock = super::remove_inside_brackets(&mock, &String::from("[]()"));
 		assert_eq!(mock, String::from("black_mirror_bandersnatch__"));
+		let mock = String::from("black_mirror_bandersnatch");
+		let mock = super::remove_inside_brackets(&mock, &String::from(""));
+		assert_eq!(mock, String::from("black_mirror_bandersnatch"));
+		let mock = String::from("black_mirrór_bandersnątćh");
+		let mock = super::remove_inside_brackets(&mock, &String::from(""));
+		assert_eq!(mock, String::from("black_mirrór_bandersnątćh"));
 	}
 
 	#[test]

@@ -34,14 +34,14 @@ pub struct Args {
 	#[structopt(name = "fix-spaces", long, short = "s", default_value = "")]
 	pub fix_spaces: String,
 
-	/// remove tags, they're usually inside [] or (). e.g. -s "() []"
+	/// remove tags, they're usually inside [] or (). e.g. -s "()[]"
 	///
 	/// Syntax for this argument should be '<opening bracket><closing
-	/// bracket> <repeat>'
+	/// bracket><repeat>'
 	///
 	/// example:
 	///
-	/// ezr -s "[] ()"
+	/// ezr -s "[]()"
 	///
 	/// "Mind Field S03E02 (2018) [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02.mkv"
 	#[structopt(name = "remove-tags", long = "rmtags", short = "t", default_value = "")]
