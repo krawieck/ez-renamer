@@ -7,7 +7,9 @@ pub fn process_name(
 	args: &Args,
 ) -> Result<(std::path::PathBuf, std::path::PathBuf), ()> {
 	use log::info;
+	use std::path::PathBuf;
 	use trim::trim;
+
 	let (path, filename, extension) = {
 		(
 			String::from(entry.parent().unwrap().to_str().unwrap()),
@@ -26,22 +28,30 @@ pub fn process_name(
 	);
 
 	let filename = remove_inside_brackets(&filename, &args.remove_tags);
+	info!("after remove_inside_brackets: {}", &filename);
 	let filename = fix_spaces(&filename, &args.fix_spaces);
+	info!("after fix_spaces: {}", &filename);
 	let filename = delete(&filename, &args.delete);
+	info!("after delete: {}", &filename);
 	let filename = trim(&filename, &args);
+	info!("after trim: {}", &filename);
 
 	let filename = if !args.dont_cleanup {
 		cleanup_spaces(&filename)
 	} else {
 		filename
 	};
+	info!("after cleanup_spaces: {}", &filename);
 
-	let mut final_name = std::path::PathBuf::from(path);
+	let filename = if !extension.is_empty() {
+		format!("{}.{}", filename, extension)
+	} else {
+		filename
+	};
+	let mut final_name = PathBuf::from(path);
+
 	final_name.push(filename);
-
-	if !args.include_ext {
-		final_name.set_extension(extension);
-	}
+	info!("after final_name.push: {:?}", &final_name);
 
 	info!("------");
 	Ok((entry, final_name))
