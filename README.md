@@ -10,11 +10,19 @@ ezr [FLAGS] [OPTIONS] [file-match]
 
 ## Instalation
 
-```
+```sh
 cargo install ezr
 ```
 
 You need to have [Rust](https://www.rust-lang.org/tools/install) installed on your machine.
+
+## Installing from source
+
+```bash
+git clone https://github.com/krawieck/ez-renamer
+cd ez-renamer
+cargo install
+```
 
 ## Args
 
