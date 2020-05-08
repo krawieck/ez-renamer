@@ -1,6 +1,6 @@
 [package]
 name = "ezr"
-version = "0.1.5"
+version = "0.1.6"
 authors = ["krawieck <fil.krawczyk@gmail.com>"]
 license-file = "LICENSE"
 description = "Rust CLI tool for batch renaming files. It's purposefuly not very featureful because it's meant to be used for just some quick renaming."
@@ -11,10 +11,10 @@ categories = ["command-line-utilities"]
 
 [dependencies]
 regex = "1"
-log = "0.4.6"
-pretty_env_logger = "0.3.0"
+log = "0.4.8"
+pretty_env_logger = "0.4.0"
 exitcode = "1.1.2"
-structopt = "0.2.14"
+structopt = "0.3.14"
 
 [dev-dependencies.cargo-husky]
 version = "1"
