@@ -9,11 +9,7 @@ fn parse_regex(src: &str) -> Result<Regex, regex::Error> {
 #[structopt(name = "ez-renamer")]
 pub struct Args {
 	/// regular expression for files that should be renamed
-	#[structopt(
-		parse(try_from_str = "parse_regex"),
-		name = "file-match",
-		default_value = "."
-	)]
+	#[structopt(parse(try_from_str = parse_regex), name = "file-match", default_value = ".")]
 	pub file_match: Regex,
 
 	/// directory where should this program look for files
@@ -54,7 +50,12 @@ pub struct Args {
 	/// ezr --trim-right-after [1080p]
 	///
 	/// "Mind Field S03E02 [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02 [1080p].mkv"
-	#[structopt(name = "trim-right-after", long, default_value = "")]
+	#[structopt(
+		name = "trim-right-after",
+		long,
+		default_value = "",
+		allow_hyphen_values = true
+	)]
 	pub trim_right_after: String,
 
 	/// Trim with the given sequence to the right
@@ -64,7 +65,12 @@ pub struct Args {
 	/// ezr --trim-right-with [1080p]
 	///
 	/// "Mind Field S03E02 [1080p] [x265] [YIFY].mkv" -> "Mind Field S03E02 .mkv"
-	#[structopt(name = "trim-right-with", long, default_value = "")]
+	#[structopt(
+		name = "trim-right-with",
+		long,
+		default_value = "",
+		allow_hyphen_values = true
+	)]
 	pub trim_right_with: String,
 
 	/// Trim after the given sequence to the left.
@@ -74,7 +80,12 @@ pub struct Args {
 	/// ezr --trim-left-with Mind
 	///
 	/// "[HorribleSubs] Mind Field S03E02.mkv" -> "Mind Field S03E02.mkv"
-	#[structopt(name = "trim-left-after", long, default_value = "")]
+	#[structopt(
+		name = "trim-left-after",
+		long,
+		default_value = "",
+		allow_hyphen_values = true
+	)]
 	pub trim_left_after: String,
 
 	/// Trim with the given sequence to the left.
@@ -84,7 +95,12 @@ pub struct Args {
 	/// ezr --trim-left-with ubs]
 	///
 	/// "[HorribleSubs] Mind Field S03E02.mkv" -> "Mind Field S03E02.mkv"
-	#[structopt(name = "trim-left-with", long, default_value = "")]
+	#[structopt(
+		name = "trim-left-with",
+		long,
+		default_value = "",
+		allow_hyphen_values = true
+	)]
 	pub trim_left_with: String,
 
 	/// By default ez-renamer removes multiple spaces (cleans up)
@@ -99,7 +115,7 @@ pub struct Args {
 	/// ezr -d "[WEBRip] [720p] [YTS.AM]"
 	///
 	/// "Green Book (2018) [WEBRip] [720p] [YTS.AM]" -> "Green Book (2018)"
-	#[structopt(long, short, default_value = "")]
+	#[structopt(long, short, default_value = "", allow_hyphen_values = true)]
 	pub delete: String,
 
 	/// recursively goes through directories
@@ -124,7 +140,6 @@ pub struct Args {
 impl Args {
 	#[cfg(test)]
 	pub fn new() -> Self {
-		use regex::Regex;
 		use std::path::PathBuf;
 		Args {
 			file_match: Regex::new(".").unwrap(),

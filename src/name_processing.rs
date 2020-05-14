@@ -97,7 +97,6 @@ fn fix_spaces(input: &str, replacer: &str) -> String {
 /// example:
 /// `remove_inside_brackets("black mirror s03e01 (2018) [x265] [1080p]", "[]()") -> "black mirror s03e01   "`
 fn remove_inside_brackets(input: &str, brackets: &str) -> String {
-	use exitcode;
 	use regex::Regex;
 	use std::{process, str};
 
@@ -126,7 +125,7 @@ fn remove_inside_brackets(input: &str, brackets: &str) -> String {
 			reg.replace_all(&output, "").to_string()
 		};
 	}
-	output.to_owned()
+	output
 }
 
 /// Deletes some phrase
@@ -179,5 +178,10 @@ mod tests {
 			),
 			String::from("Black Mirror Bandersnatch ")
 		)
+	}
+
+	#[test]
+	fn test_hyphen() {
+		assert_eq!(super::delete("Foo -[bar]", "-[bar]"), String::from("Foo "))
 	}
 }
